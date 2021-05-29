@@ -1,11 +1,9 @@
 import { readFileSync } from 'fs'
 import { join as joinPath } from 'path'
 import { NowRequest, NowResponse } from '@now/node'
-import { createTrackStatusCodes } from '@zeit/metrics'
 import { satisfies } from 'semver'
 import { Url } from 'url'
 
-const trackStatusCodes = createTrackStatusCodes('hyper-news')
 
 // Set Type for Messages
 interface Messages {
@@ -31,7 +29,7 @@ const matchPlatform = (platforms: Array<String>, clientPlatform: string | string
 )
 
 // Main function export
-export default trackStatusCodes((req: NowRequest, res: NowResponse) => {
+export default (req: NowRequest, res: NowResponse) => {
   // Get platform and version headers, which should be sent from Hyper.app
   const platform = req.headers['x-hyper-platform']
   const version = req.headers['x-hyper-version']
@@ -50,4 +48,4 @@ export default trackStatusCodes((req: NowRequest, res: NowResponse) => {
   // Respond with message
   res.json({message})
   return
-})
+}

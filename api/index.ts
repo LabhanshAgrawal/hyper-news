@@ -30,10 +30,11 @@ const matchPlatform = (platforms: Array<String>, clientPlatform: string | string
 
 // Main function export
 export default (req: NowRequest, res: NowResponse) => {
-  console.log(req.headers)
   // Get platform and version headers, which should be sent from Hyper.app
   const platform = req.headers['x-hyper-platform']
   const version = req.headers['x-hyper-version']
+  
+  console.log(JSON.stringify({platform, version}))
 
   // If platform and version aren't defined, assume legacy Hyper version and respond with legacy message
   if (platform === undefined || version === undefined) {

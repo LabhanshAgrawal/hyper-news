@@ -47,5 +47,6 @@ export default (req: VercelRequest, res: VercelResponse) => {
 
   // Respond with message
   res.json({message})
+  console.log(JSON.stringify({message}))
   return
 }

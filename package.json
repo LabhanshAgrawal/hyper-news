@@ -4,7 +4,7 @@
   "description": "",
   "main": "/api/index.js",
   "scripts": {
-    "start": "now dev",
+    "start": "vercel dev",
     "test": "xo"
   },
   "repository": "zeit/hyper-news",
@@ -18,11 +18,13 @@
   },
   "homepage": "https://github.com/zeit/hyper-news#readme",
   "dependencies": {
-    "semver": "5.3.0"
+    "semver": "^7.3.5"
   },
   "devDependencies": {
-    "@now/node": "^1.1.2",
-    "xo": "^0.25.3"
+    "@types/semver": "^7.3.6",
+    "@vercel/node": "^1.11.0",
+    "vercel": "23.0.0",
+    "xo": "^0.40.2"
   },
   "xo": {
     "space": true,

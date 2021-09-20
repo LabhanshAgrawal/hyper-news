@@ -2,7 +2,7 @@ import { readFileSync } from 'fs'
 import { join as joinPath } from 'path'
 import { VercelRequest, VercelResponse } from '@vercel/node'
 import { satisfies } from 'semver'
-
+import clientPromise from './mongodb-client';
 // Set Type for Messages
 interface Messages {
   text: string;
@@ -27,12 +27,15 @@ const matchPlatform = (platforms: string[], clientPlatform: string) => (
 )
 
 // Main function export
-export default (req: VercelRequest, res: VercelResponse) => {
+export default async (req: VercelRequest, res: VercelResponse) => {
   // Get platform and version headers, which should be sent from Hyper.app
   const platform = req.headers['x-hyper-platform'] as string
   const version = req.headers['x-hyper-version'] as string
 
   console.log(JSON.stringify({platform, version}))
+
+  const client = await clientPromise;
+  await client.db('hyper').collection('log').insertOne({platform,version,ts:new Date().getTime()});
 
   // If platform and version aren't defined, assume legacy Hyper version and respond with legacy message
   if (platform === undefined || version === undefined) {

@@ -33,15 +33,15 @@ export default async (req: VercelRequest, res: VercelResponse) => {
   const version = req.headers['x-hyper-version'] as string
 
   console.log(JSON.stringify({platform, version}))
-
-  const client = await clientPromise;
-  await client.db('hyper').collection('log').insertOne({platform,version,ts:new Date().getTime()});
-
+  
   // If platform and version aren't defined, assume legacy Hyper version and respond with legacy message
   if (platform === undefined || version === undefined) {
     res.json(legacyNews)
     return
   }
+  
+  const client = await clientPromise;
+  await client.db('hyper').collection('log').insertOne({platform,version,count:1,ts:new Date().getTime()});
 
   // Set message, if there are any found
   const message = news.messages.find((msg: Messages) => (

@@ -3,6 +3,7 @@ import { join as joinPath } from 'path'
 import { VercelRequest, VercelResponse } from '@vercel/node'
 import { satisfies } from 'semver'
 import clientPromise from './mongodb-client';
+import { cleanupDB, doc } from './mongodb-cleanup';
 // Set Type for Messages
 interface Messages {
   text: string;
@@ -40,9 +41,6 @@ export default async (req: VercelRequest, res: VercelResponse) => {
     return
   }
   
-  const client = await clientPromise;
-  await client.db('hyper').collection('log').insertOne({platform,version,count:1,ts:new Date().getTime()});
-
   // Set message, if there are any found
   const message = news.messages.find((msg: Messages) => (
     matchVersion(msg.versions, version) && matchPlatform(msg.platforms, platform)
@@ -50,6 +48,13 @@ export default async (req: VercelRequest, res: VercelResponse) => {
 
   // Respond with message
   res.json({message})
-  // console.log(JSON.stringify({message}))
-  return
+
+  //Push logs    
+  const client = await clientPromise;
+  await client.db('hyper').collection<doc>('log').insertOne({platform,version,count:1,ts:new Date().getTime()});
+  //Cleanup logs with 0.1% probability
+  if(Math.random()<0.001) {
+    await cleanupDB();
+  }
+  return;
 }

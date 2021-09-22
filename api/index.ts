@@ -2,7 +2,7 @@ import { readFileSync } from 'fs'
 import { join as joinPath } from 'path'
 import { VercelRequest, VercelResponse } from '@vercel/node'
 import { satisfies } from 'semver'
-import clientPromise from './mongodb-client';
+import collectionPromise from './mongodb-client';
 import { cleanupDB, doc } from './mongodb-cleanup';
 // Set Type for Messages
 interface Messages {
@@ -50,8 +50,8 @@ export default async (req: VercelRequest, res: VercelResponse) => {
   res.json({message})
 
   //Push logs    
-  const client = await clientPromise;
-  await client.db('hyper').collection<doc>('log').insertOne({platform,version,count:1,ts:new Date().getTime()});
+  const collection = await collectionPromise;
+  await collection.insertOne({platform,version,count:1,ts:new Date().getTime()});
   //Cleanup logs with 1% probability
   if(Math.random()<0.01) {
     await cleanupDB();

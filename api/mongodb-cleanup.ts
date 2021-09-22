@@ -1,4 +1,4 @@
-import clientPromise from './mongodb-client';
+import collectionPromise from './mongodb-client';
 
 export type doc = {ts: number; version: string; platform: string; count: number};
 
@@ -6,8 +6,7 @@ const groupingPeriod = 60_000;
 
 export const cleanupDB = async () => {
   console.log('Updating DB');
-  const _client = await clientPromise;
-  const collection = _client.db('hyper').collection<doc>('log');
+  const collection = await collectionPromise;
   const data = await collection.findOne({
     $expr: {
       $and: [

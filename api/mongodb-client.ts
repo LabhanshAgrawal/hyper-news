@@ -1,5 +1,6 @@
 // Import the dependency.
 import { MongoClient } from 'mongodb';
+import { doc } from './mongodb-cleanup';
 const uri = process.env.MONGODB_URI;
 const options:any = {
    useUnifiedTopology: true,
@@ -9,8 +10,6 @@ let client: MongoClient;
 let clientPromise: Promise<MongoClient>;
 
 client = new MongoClient(uri, options);
-clientPromise = client.connect()
+const collectionPromise = client.connect().then(_client => _client.db('hyper').collection<doc>('log'))
 
-  // Export a module-scoped MongoClient promise. By doing this in a
-  // separate module, the client can be shared across functions.
-export default clientPromise;
+export default collectionPromise;

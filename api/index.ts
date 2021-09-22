@@ -52,8 +52,8 @@ export default async (req: VercelRequest, res: VercelResponse) => {
   //Push logs    
   const client = await clientPromise;
   await client.db('hyper').collection<doc>('log').insertOne({platform,version,count:1,ts:new Date().getTime()});
-  //Cleanup logs with 0.1% probability
-  if(Math.random()<0.001) {
+  //Cleanup logs with 1% probability
+  if(Math.random()<0.01) {
     await cleanupDB();
   }
   return;

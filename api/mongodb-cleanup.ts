@@ -10,11 +10,21 @@ export const cleanupDB = async () => {
   const collection = _client.db('hyper').collection<doc>('log');
   const data = await collection.findOne({
     $expr: {
-      $ne: [
+      $and: [
         {
-          $mod: ['$ts', groupingPeriod]
+          $ne: [
+            {
+              $mod: ['$ts', groupingPeriod]
+            },
+            0
+          ]
         },
-        0
+        {
+          $lt: [
+            '$ts',
+            new Date().getTime() - groupingPeriod
+          ]
+        }
       ]
     }
   });
@@ -26,10 +36,6 @@ export const cleanupDB = async () => {
 
   const ts = data.ts - (data.ts % groupingPeriod);
 
-  if (ts >= new Date().getTime() - groupingPeriod) {
-    console.log('Not much data to process');
-    return;
-  }
   console.log('processing', new Date(ts).toLocaleString());
 
   const data2 = (
@@ -38,13 +44,6 @@ export const cleanupDB = async () => {
         {
           $expr: {
             $eq: [{$subtract: ['$ts', {$mod: ['$ts', groupingPeriod]}]}, ts]
-          }
-        },
-        {
-          projection: {
-            version: 1,
-            platform: 1,
-            count: 1
           }
         }
       )
@@ -76,6 +75,6 @@ export const cleanupDB = async () => {
     })
   );
   console.log('processed', new Date(ts).toLocaleString());
-
   // await cleanupDB();
+  return;
 };

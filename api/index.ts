@@ -52,9 +52,6 @@ export default async (req: VercelRequest, res: VercelResponse) => {
   //Push logs    
   const collection = await collectionPromise;
   await collection.insertOne({platform,version,count:1,ts:new Date().getTime()});
-  //Cleanup logs with 1% probability
-  if(Math.random()<0.01) {
-    await cleanupDB();
-  }
+
   return;
 }

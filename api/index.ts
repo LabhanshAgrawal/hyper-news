@@ -3,7 +3,6 @@ import { join as joinPath } from 'path'
 import { VercelRequest, VercelResponse } from '@vercel/node'
 import { satisfies } from 'semver'
 import collectionPromise from './mongodb-client';
-import { cleanupDB, doc } from './mongodb-cleanup';
 // Set Type for Messages
 interface Messages {
   text: string;

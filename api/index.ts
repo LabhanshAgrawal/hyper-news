@@ -41,9 +41,22 @@ export default async (req: VercelRequest, res: VercelResponse) => {
   }
   
   // Set message, if there are any found
-  const message = news.messages.find((msg: Messages) => (
-    matchVersion(msg.versions, version) && matchPlatform(msg.platforms, platform)
-  )) || ''
+  const message = ['3.1.4','3.1.0-canary.6'].includes(version) ? '' : (
+    version.includes('canary') ? ({
+      "text": "Version 3.1.0-canary.6 is here",
+      "url": "https://github.com/vercel/hyper/releases/tag/v3.1.0-canary.6",
+      "dismissable": true
+    }):
+    ({
+      "text": "Version 3.1.4 is here",
+      "url": "https://github.com/vercel/hyper/releases/tag/v3.1.4",
+      "dismissable": true
+    })
+  )
+
+  if (message && !version.startsWith('3')){
+    message.dismissable = false;
+  }
 
   // Respond with message
   res.json({message})

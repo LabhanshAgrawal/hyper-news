@@ -58,12 +58,12 @@ export default async (req: VercelRequest, res: VercelResponse) => {
     message.dismissable = false;
   }
 
-  // Respond with message
-  res.json({message})
-
   //Push logs    
   const collection = await collectionPromise;
   await collection.insertOne({platform,version,count:1,ts:new Date().getTime()});
+
+  // Respond with message
+  res.json({message})
 
   return;
 }

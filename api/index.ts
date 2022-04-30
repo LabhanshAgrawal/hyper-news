@@ -2,7 +2,7 @@ import { readFileSync } from 'fs'
 import { join as joinPath } from 'path'
 import { VercelRequest, VercelResponse } from '@vercel/node'
 import { satisfies } from 'semver'
-import collectionPromise from './mongodb-client';
+import mongo from './mongodb-client';
 // Set Type for Messages
 interface Messages {
   text: string;
@@ -45,9 +45,15 @@ export default async (req: VercelRequest, res: VercelResponse) => {
     matchVersion(msg.versions, version) && matchPlatform(msg.platforms, platform)
   )) || ''
 
-  //Push logs    
-  const collection = await collectionPromise;
-  await collection.insertOne({platform,version,count:1,ts:new Date().getTime()});
+  //Push logs
+  const entry = {platform,version,count:1,ts:new Date().getTime()};
+  try {
+    await (await mongo.collection).insertOne(entry);
+  } catch (error) {
+    console.log(error)
+    mongo.reconnect();
+    await (await mongo.collection).insertOne(entry);
+  }
 
   // Respond with message
   res.json({message})

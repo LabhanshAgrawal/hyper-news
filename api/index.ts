@@ -52,7 +52,6 @@ export default async (req: VercelRequest, res: VercelResponse) => {
   } catch (error) {
     console.log(error)
     mongo.reconnect();
-    await (await mongo.collection).insertOne(entry);
   }
 
   // Respond with message

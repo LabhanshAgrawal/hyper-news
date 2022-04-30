@@ -12,7 +12,7 @@ let client: MongoClient;
 
 client = new MongoClient(uri, options);
 
-let reconnecting = true;
+let reconnecting = false;
 const reconnect = () => {
    if (reconnecting) return;
    reconnecting = true;

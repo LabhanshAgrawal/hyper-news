@@ -46,13 +46,13 @@ export default async (req: VercelRequest, res: VercelResponse) => {
   )) || ''
 
   //Push logs
-  const entry = {platform,version,count:1,ts:new Date().getTime()};
-  try {
-    await (await mongo.collection).insertOne(entry);
-  } catch (error) {
-    console.log(error)
-    mongo.reconnect();
-  }
+  // const entry = {platform,version,count:1,ts:new Date().getTime()};
+  // try {
+  //   await (await mongo.collection).insertOne(entry);
+  // } catch (error) {
+  //   console.log(error)
+  //   mongo.reconnect();
+  // }
 
   // Respond with message
   res.json({message})
